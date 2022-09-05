@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:globe_flutter_android/lid.dart';
+import 'package:globe_flutter_android/painter.dart';
 import 'package:globe_flutter_android/settings.dart';
+import 'package:svg_path_parser/svg_path_parser.dart';
 
 class TitleWidget extends StatefulWidget {
   const TitleWidget({Key? key}) : super(key: key);
@@ -10,6 +15,9 @@ class TitleWidget extends StatefulWidget {
 }
 
 class _TitleState extends State<TitleWidget> {
+  final Future<String> countryOutlines =
+      rootBundle.loadString("assets/data/country_outlines.json");
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -80,50 +88,89 @@ class _TitleState extends State<TitleWidget> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      children: <Widget>[
-                        Column(
-                          children: <Widget>[
-                            const Text("Hi"),
-                            Image.asset(
-                              "assets/top.png",
-                              height: 100,
-                              width: 100,
-                            ),
-                          ],
-                        ),
-                        Column(
-                          children: <Widget>[
-                            const Text("Hi"),
-                            Image.asset(
-                              "assets/top.png",
-                              height: 100,
-                              width: 100,
-                            ),
-                          ],
-                        ),
-                        Column(
-                          children: <Widget>[
-                            const Text("Hi"),
-                            Image.asset(
-                              "assets/top.png",
-                              height: 100,
-                              width: 100,
-                            ),
-                          ],
-                        ),
-                        Column(
-                          children: <Widget>[
-                            const Text("Hi"),
-                            Image.asset(
-                              "assets/top.png",
-                              height: 100,
-                              width: 100,
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
+                    child: FutureBuilder<String>(
+                        future: countryOutlines,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            var contryOutlines =
+                                json.decode(snapshot.data.toString());
+
+                            return Row(
+                              children: <Widget>[
+                                Column(
+                                  children: <Widget>[
+                                    Text(contryOutlines[0]['name']),
+                                    SizedBox(
+                                      width: 90,
+                                      height: 90,
+                                      child: Country(
+                                        contryOutlines[0]['name'],
+                                        parseSvgPath(contryOutlines[0]['path']),
+                                        scale: 0.13,
+                                        const Color.fromARGB(
+                                            255, 255, 221, 107),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  children: <Widget>[
+                                    Text(contryOutlines[1]['name']),
+                                    SizedBox(
+                                        width: 90,
+                                        height: 90,
+                                        child: Country(
+                                          contryOutlines[1]['name'],
+                                          parseSvgPath(
+                                              contryOutlines[1]['path']),
+                                          scale: 0.13,
+                                          const Color.fromARGB(
+                                              255, 255, 162, 57),
+                                        ))
+                                  ],
+                                ),
+                                Column(
+                                  children: <Widget>[
+                                    Text(contryOutlines[2]['name']),
+                                    SizedBox(
+                                        width: 90,
+                                        height: 90,
+                                        child: Country(
+                                          contryOutlines[2]['name'],
+                                          parseSvgPath(
+                                              contryOutlines[2]['path']),
+                                          scale: 0.13,
+                                          const Color.fromARGB(
+                                              255, 255, 92, 64),
+                                        )),
+                                  ],
+                                ),
+                                Column(
+                                  children: <Widget>[
+                                    Text(contryOutlines[3]['name']),
+                                    SizedBox(
+                                        width: 90,
+                                        height: 90,
+                                        child: Country(
+                                          contryOutlines[3]['name'],
+                                          parseSvgPath(
+                                              contryOutlines[3]['path']),
+                                          scale: 0.13,
+                                          const Color.fromARGB(
+                                              255, 143, 56, 56),
+                                        )),
+                                  ],
+                                )
+                              ],
+                            );
+                          }
+
+                          return const SizedBox(
+                            width: 60,
+                            height: 60,
+                            child: CircularProgressIndicator(),
+                          );
+                        }),
                   ),
                   const Text(
                     'A new Mystery Country will be available every day!',
