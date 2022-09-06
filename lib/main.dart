@@ -1,22 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:globe_flutter_android/title.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(MaterialApp(
-    title: 'GLOBLE',
-    theme: ThemeData(
-      primarySwatch: MaterialColor(
-        10,
-        getSwatch(
-          const Color.fromARGB(0, 14, 14, 221),
+  runApp(
+    ChangeNotifierProvider<ThemeModel>(
+      create: (_) => ThemeModel(),
+      child: Consumer<ThemeModel>(
+        builder: (context, model, child) => MaterialApp(
+          title: 'GLOBLE',
+          theme: ThemeData.light(),
+          darkTheme: ThemeData.dark(),
+          themeMode: model.mode,
+          debugShowCheckedModeBanner: false,
+          home: const Scaffold(
+            body: TitleWidget(),
+          ),
         ),
       ),
     ),
-    debugShowCheckedModeBanner: false,
-    home: const Scaffold(
-      body: TitleWidget(),
-    ),
-  ));
+  );
+}
+
+class ThemeModel with ChangeNotifier {
+  ThemeMode _mode;
+  ThemeMode get mode => _mode;
+  ThemeModel({ThemeMode mode = ThemeMode.light}) : _mode = mode;
+
+  void toggleMode() {
+    _mode = _mode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+    notifyListeners();
+  }
 }
 
 Map<int, Color> getSwatch(Color color) {
