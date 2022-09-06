@@ -73,7 +73,7 @@ class Painter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     canvas.scale(scale);
-    for (int i = 0; path[i + 1] != null; i++) {
+    for (int i = 0; i < path.length - 1; i++) {
       var paint = Paint()
         ..color = color
         ..strokeWidth = 4.0;

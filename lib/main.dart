@@ -8,7 +8,7 @@ void main() {
       primarySwatch: MaterialColor(
         10,
         getSwatch(
-          Color.fromARGB(0, 14, 14, 221),
+          const Color.fromARGB(0, 14, 14, 221),
         ),
       ),
     ),
@@ -22,8 +22,8 @@ void main() {
 Map<int, Color> getSwatch(Color color) {
   final hslColor = HSLColor.fromColor(color);
   final lightness = hslColor.lightness;
-  final lowDivisor = 6;
-  final highDivisor = 5;
+  const lowDivisor = 6;
+  const highDivisor = 5;
   final lowStep = (1.0 - lightness) / lowDivisor;
   final highStep = lightness / highDivisor;
   return {

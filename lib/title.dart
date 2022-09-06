@@ -1,11 +1,12 @@
 import 'dart:convert';
-import 'dart:ui';
+// import 'dart:ui';
+import 'package:globe_flutter_android/game.dart';
+import 'package:globe_flutter_android/navbar.dart';
+
 import '../planet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../lid.dart';
 import '../painter.dart';
-import '../settings.dart';
 import 'package:svg_path_parser/svg_path_parser.dart';
 
 class TitleWidget extends StatefulWidget {
@@ -42,81 +43,16 @@ class _TitleState extends State<TitleWidget> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    IconButton(
-                      alignment: Alignment.center,
-                      icon: const Icon(Icons.question_mark,
-                          color: Color.fromARGB(255, 255, 255, 255)),
-                      tooltip: 'Home',
-                      onPressed: () {},
-                    ),
-                    const Text(
-                      'GLOBLE',
-                      style: TextStyle(
-                          fontSize: 40,
-                          fontFamily: "Nunito",
-                          color: Color.fromARGB(255, 255, 255, 255)),
-                    ),
-                    Row(
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.analytics,
-                              color: Color.fromARGB(255, 255, 255, 255)),
-                          tooltip: 'Statistics',
-                          onPressed: () {
-                            showDialog(
-                                builder: (BuildContext context) => leadDialog,
-                                context: context);
-                          },
-                        ),
-                        IconButton(
-                            icon: const Icon(
-                              Icons.settings,
-                              color: Color.fromARGB(255, 255, 255, 255),
-                            ),
-                            tooltip: 'Settings',
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const Settings()),
-                              );
-                            }),
-                      ],
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 10,
-                      height: 10,
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.height / 2,
-                      height: 5,
-                      child: Container(
-                        color: Color.fromARGB(255, 255, 255, 255),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 10,
-                      height: 10,
-                    ),
-                  ],
-                ),
+                const NavbarWidget(),
                 const Padding(
-                  padding: EdgeInsets.all(16.0),
+                  padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
                   child: Text(
                     'How to play',
                     style: TextStyle(fontFamily: "Nunito", fontSize: 30),
                   ),
                 ),
                 const Padding(
-                  padding: EdgeInsets.all(16.0),
+                  padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
                   child: Text(
                     'Every day, there is a new Mystery Country. Your goal is to guess the mystery country using the fewest number of guesses. Each incorrect guess will appear on the globe with a colour indicating how close it is to the Mystery Country. The hotter the colour, the closer you are to the answer.\n\nFor example, if the Mystery Country is Japan, then the following countries would appear with these colours if guessed:',
                     style: TextStyle(
@@ -211,26 +147,35 @@ class _TitleState extends State<TitleWidget> {
                   'A new Mystery Country will be available every day!',
                   style: TextStyle(fontFamily: "Nunito"),
                 ),
-                Positioned(
-                  top: MediaQuery.of(context).size.height /
-                      (!isInteracting ? 44 : 66),
-                  child: GestureDetector(
+                GestureDetector(
                     onTap: () {
                       setState(() {
-                        isInteracting = !isInteracting;
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const GameWidget()),
+                        );
+
+                        // Change Page
+                        // isInteracting = !isInteracting;
                       });
                     },
-                    child: !isInteracting
-                        ? Planet(
-                            key: Key('Planet1'),
-                            interative: false,
-                          )
-                        : Planet(
-                            key: Key('Planet2'),
-                            interative: true,
-                          ),
-                  ),
-                ),
+                    child: Planet(
+                      interative: isInteracting,
+                      height: MediaQuery.of(context).size.height / 5,
+                      width: MediaQuery.of(context).size.width,
+                    )
+                    // !isInteracting
+                    //     ? Planet(
+                    //         // key: const Key('Planet1'),
+                    //         interative: false,
+                    //       )
+                    //     : Planet(
+                    //         key: const Key('Planet2'),
+                    //         interative: true,
+                    //       ),
+                    ),
+
                 /*FutureBuilder<String>(
                       future: countryOutlines,
                       builder: (context, snapshot) {
@@ -261,18 +206,18 @@ class _TitleState extends State<TitleWidget> {
                           child: CircularProgressIndicator(),
                         );
                       }),*/
-                const Text(
-                  'Click the globe to play!',
-                  style: TextStyle(fontFamily: "Nunito"),
-                ),
-                const SizedBox(
-                  height: 100,
-                  width: 100,
-                ),
+                // const Text(
+                //   'Click the globe to play!',
+                //   style: TextStyle(fontFamily: "Nunito"),
+                // ),
+                // const SizedBox(
+                //   // height: 100,
+                //   width: 100,
+                // ),
                 Container(
                   alignment: Alignment.bottomLeft,
                   child: const Text(
-                    'Have a question? Check out the FAQ',
+                    ' Have a question? Check out the FAQ',
                     style: TextStyle(fontFamily: "Nunito"),
                   ),
                 ),

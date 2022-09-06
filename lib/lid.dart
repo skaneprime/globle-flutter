@@ -4,7 +4,7 @@ Dialog leadDialog = Dialog(
   child: Container(
     height: 300.0,
     width: 360.0,
-    color: Color.fromARGB(255, 194, 251, 253),
+    color: const Color.fromARGB(255, 194, 251, 253),
     child: Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
