@@ -75,6 +75,7 @@ flutter:
     - assets/data/symbol_svgs.json
     - assets/data/territories.json
     - assets/earth/
+    - assets/country/
 
   #   - images/a_dot_ham.jpeg
 

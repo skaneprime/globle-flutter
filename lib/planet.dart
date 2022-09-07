@@ -19,6 +19,7 @@ class _PlanetState extends State<Planet> with SingleTickerProviderStateMixin {
   late Scene _scene;
 
   Object? _earth;
+  Object? _country;
 
   late AnimationController _controller;
 
@@ -31,7 +32,7 @@ class _PlanetState extends State<Planet> with SingleTickerProviderStateMixin {
       ..addListener(() {
         if (!widget.interative) {
           if (_earth != null) {
-            _earth!.rotation.x = _controller.value * -360;
+            _earth!.rotation.y = _controller.value * -360;
             _earth!.updateTransform();
             _scene.update();
           }
@@ -61,8 +62,15 @@ class _PlanetState extends State<Planet> with SingleTickerProviderStateMixin {
       backfaceCulling: false,
       fileName: 'assets/earth/earth.obj',
     );
+    _country = Object(
+      name: 'country',
+      scale: Vector3(12.0, 12.0, 12.0),
+      backfaceCulling: false,
+      fileName: 'assets/country/earth.obj',
+    );
 
     _scene.world.add(_earth!);
+    _scene.world.add(_country!);
   }
 
   @override
