@@ -1,5 +1,6 @@
 // import 'dart:convert';
 // import 'dart:ui';
+import 'package:globe_flutter_android/search.dart';
 import 'package:globe_flutter_android/title.dart';
 
 import '../planet.dart';
@@ -46,58 +47,57 @@ class _GameState extends State<GameWidget> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    IconButton(
-                      alignment: Alignment.center,
-                      icon: const Icon(Icons.question_mark,
-                          color: Color.fromARGB(255, 255, 255, 255)),
-                      tooltip: 'Home',
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const TitleWidget()),
-                        );
-                      },
-                    ),
-                    const Text(
-                      'GLOBLE',
-                      style: TextStyle(
-                          fontSize: 40,
-                          fontFamily: "Nunito",
-                          color: Color.fromARGB(255, 255, 255, 255)),
-                    ),
-                    Row(
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.analytics,
-                              color: Color.fromARGB(255, 255, 255, 255)),
-                          tooltip: 'Statistics',
-                          onPressed: () {
-                            showDialog(
-                                builder: (BuildContext context) => leadDialog,
-                                context: context);
-                          },
-                        ),
-                        IconButton(
-                            icon: const Icon(
-                              Icons.settings,
-                              color: Color.fromARGB(255, 255, 255, 255),
-                            ),
-                            tooltip: 'Settings',
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        alignment: Alignment.center,
+                        icon: const Icon(Icons.question_mark,
+                            color: Color.fromARGB(255, 255, 255, 255)),
+                        tooltip: 'Home',
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const TitleWidget()),
+                          );
+                        },
+                      ),
+                      const Text(
+                        'GLOBLE',
+                        style: TextStyle(
+                            fontSize: 40,
+                            fontFamily: "Nunito",
+                            color: Color.fromARGB(255, 255, 255, 255)),
+                      ),
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.analytics,
+                                color: Color.fromARGB(255, 255, 255, 255)),
+                            tooltip: 'Statistics',
                             onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const Settings()),
-                              );
-                            }),
-                      ],
-                    ),
-                  ],
-                ),
+                              showDialog(
+                                  builder: (BuildContext context) => leadDialog,
+                                  context: context);
+                            },
+                          ),
+                          IconButton(
+                              icon: const Icon(
+                                Icons.settings,
+                                color: Color.fromARGB(255, 255, 255, 255),
+                              ),
+                              tooltip: 'Settings',
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const Settings()),
+                                );
+                              }),
+                        ],
+                      ),
+                    ]),
                 Row(
                   children: [
                     const SizedBox(
@@ -124,12 +124,17 @@ class _GameState extends State<GameWidget> {
                       isInteracting = !isInteracting;
                     });
                   },
-                  child: Planet(
-                    interative: isInteracting,
-                    height: MediaQuery.of(context).size.height / 2,
-                    width: MediaQuery.of(context).size.width,
+                  child: Stack(
+                    children: [
+                      Planet(
+                        interative: isInteracting,
+                        height: MediaQuery.of(context).size.height / 2,
+                        width: MediaQuery.of(context).size.width,
+                      ),
+                      Container(alignment: Alignment.center, child: Search()),
+                    ],
                   ),
-                )
+                ),
               ],
             ),
           ),
