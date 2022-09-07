@@ -1,7 +1,9 @@
 // import 'dart:convert';
 // import 'dart:ui';
+import 'package:globe_flutter_android/navbar.dart';
 import 'package:globe_flutter_android/search.dart';
 import 'package:globe_flutter_android/title.dart';
+import 'package:provider/provider.dart';
 
 import '../planet.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +12,8 @@ import '../lid.dart';
 // import '../painter.dart';
 import '../settings.dart';
 import 'package:svg_path_parser/svg_path_parser.dart';
+
+import 'main.dart';
 
 class GameWidget extends StatefulWidget {
   const GameWidget({Key? key}) : super(key: key);
@@ -25,98 +29,32 @@ class _GameState extends State<GameWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage("assets/cloud.png"),
-                fit: BoxFit.cover,
-                opacity: 0.2),
-            gradient: RadialGradient(
-              center: Alignment.topCenter,
-              colors: [
-                Color.fromARGB(178, 63, 201, 255),
-                Color.fromARGB(255, 63, 201, 255)
-              ],
+    return Consumer<ThemeModel>(
+      builder: (context, theme, child) => MaterialApp(
+        home: Scaffold(
+          body: Container(
+            decoration: BoxDecoration(
+              image: const DecorationImage(
+                  image: AssetImage("assets/cloud.png"),
+                  fit: BoxFit.cover,
+                  opacity: 0.2),
+              gradient: RadialGradient(
+                center: Alignment.topCenter,
+                colors: [
+                  theme.mode == ThemeMode.light
+                      ? const Color.fromARGB(178, 63, 201, 255)
+                      : const Color.fromARGB(177, 70, 26,
+                          100), // Color.fromARGB(178, 63, 201, 255)
+                  theme.mode == ThemeMode.light
+                      ? const Color.fromARGB(255, 63, 201, 255)
+                      : const Color.fromARGB(255, 79, 19, 85)
+                ],
+              ),
             ),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        alignment: Alignment.center,
-                        icon: const Icon(Icons.question_mark,
-                            color: Color.fromARGB(255, 255, 255, 255)),
-                        tooltip: 'Home',
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const TitleWidget()),
-                          );
-                        },
-                      ),
-                      const Text(
-                        'GLOBLE',
-                        style: TextStyle(
-                            fontSize: 40,
-                            fontFamily: "Nunito",
-                            color: Color.fromARGB(255, 255, 255, 255)),
-                      ),
-                      Row(
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.analytics,
-                                color: Color.fromARGB(255, 255, 255, 255)),
-                            tooltip: 'Statistics',
-                            onPressed: () {
-                              showDialog(
-                                  builder: (BuildContext context) => leadDialog,
-                                  context: context);
-                            },
-                          ),
-                          IconButton(
-                              icon: const Icon(
-                                Icons.settings,
-                                color: Color.fromARGB(255, 255, 255, 255),
-                              ),
-                              tooltip: 'Settings',
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const Settings()),
-                                );
-                              }),
-                        ],
-                      ),
-                    ]),
-                Row(
-                  children: [
-                    const SizedBox(
-                      width: 10,
-                      height: 10,
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.height / 2,
-                      height: 5,
-                      child: Container(
-                        color: const Color.fromARGB(255, 255, 255, 255),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                      height: 10,
-                    ),
-                  ],
-                ),
+                const NavbarWidget(),
                 GestureDetector(
                   onTap: () {
                     setState(() {
@@ -126,12 +64,20 @@ class _GameState extends State<GameWidget> {
                   },
                   child: Stack(
                     children: [
-                      Planet(
-                        interative: isInteracting,
-                        height: MediaQuery.of(context).size.height / 2,
-                        width: MediaQuery.of(context).size.width,
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Container(
+                            alignment: Alignment.topCenter,
+                            child: const Search()),
                       ),
-                      Container(alignment: Alignment.center, child: Search()),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 80.0),
+                        child: Planet(
+                          interative: isInteracting,
+                          height: MediaQuery.of(context).size.height / 2,
+                          width: MediaQuery.of(context).size.width,
+                        ),
+                      ),
                     ],
                   ),
                 ),

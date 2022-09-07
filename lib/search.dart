@@ -2,11 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:globe_flutter_android/globals.dart';
 import '../painter.dart';
 import 'package:svg_path_parser/svg_path_parser.dart';
 
 class Search extends StatefulWidget {
-  Search({Key? key}) : super(key: key);
+  const Search({Key? key}) : super(key: key);
 
   @override
   State<Search> createState() => _SearchState();
@@ -26,6 +27,13 @@ class _SearchState extends State<Search> {
             labelText: 'Countrty',
           ),
           onSaved: (String? value) {
+            String pathToAsset = "assets/country/$value/earth.obj";
+
+            try {
+              addCountry(pathToAsset);
+            } catch (e) {
+              // print("no way");
+            }
             // This optional block of code can be used to run
             // code when the user saves the form.
           },
@@ -35,37 +43,33 @@ class _SearchState extends State<Search> {
                 : null;
           },
         ),
-        Container(
-          child: FutureBuilder<String>(
-              future: countryOutlines,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  var contryOutlines = json.decode(snapshot.data.toString());
+        // FutureBuilder<String>(
+        //     future: countryOutlines,
+        //     builder: (context, snapshot) {
+        //       if (snapshot.hasData) {
+        //         var contryOutlines = json.decode(snapshot.data.toString());
 
-                  return Container(
-                    child: Column(
-                      children: <Widget>[
-                        SizedBox(
-                          width: 90,
-                          height: 90,
-                          child: World(
-                            parseSvgPathList(contryOutlines),
-                            scale: 0.13,
-                            const Color.fromARGB(255, 143, 56, 56),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }
+        //         return Column(
+        //           children: <Widget>[
+        //             SizedBox(
+        //               width: 90,
+        //               height: 90,
+        //               child: World(
+        //                 parseSvgPathList(contryOutlines),
+        //                 scale: 0.13,
+        //                 const Color.fromARGB(255, 143, 56, 56),
+        //               ),
+        //             ),
+        //           ],
+        //         );
+        //       }
 
-                return const SizedBox(
-                  width: 60,
-                  height: 60,
-                  child: CircularProgressIndicator(),
-                );
-              }),
-        ),
+        //       return const SizedBox(
+        //         width: 60,
+        //         height: 60,
+        //         child: CircularProgressIndicator(),
+        //       );
+        //     }),
         // const Text(
         //   'Click the globe to play!',
         //   style: TextStyle(fontFamily: "Nunito"),

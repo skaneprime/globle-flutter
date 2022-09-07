@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_cube/flutter_cube.dart';
+import 'globals.dart' as globals;
 
 class Planet extends StatefulWidget {
   const Planet(
@@ -16,10 +17,7 @@ class Planet extends StatefulWidget {
 }
 
 class _PlanetState extends State<Planet> with SingleTickerProviderStateMixin {
-  late Scene _scene;
-
   Object? _earth;
-  Object? _country;
 
   late AnimationController _controller;
 
@@ -34,7 +32,7 @@ class _PlanetState extends State<Planet> with SingleTickerProviderStateMixin {
           if (_earth != null) {
             _earth!.rotation.y = _controller.value * -360;
             _earth!.updateTransform();
-            _scene.update();
+            globals.scene.update();
           }
         }
       })
@@ -49,28 +47,8 @@ class _PlanetState extends State<Planet> with SingleTickerProviderStateMixin {
   }
 
   void _onSceneCreated(Scene scene) {
-    _scene = scene;
-    if (widget.interative) {
-      _scene.camera.position.z = 20;
-    } else {
-      _scene.camera.position.z = 13;
-    }
-
-    _earth = Object(
-      name: 'earth',
-      scale: Vector3(12.0, 12.0, 12.0),
-      backfaceCulling: false,
-      fileName: 'assets/earth/earth.obj',
-    );
-    _country = Object(
-      name: 'country',
-      scale: Vector3(12.0, 12.0, 12.0),
-      backfaceCulling: false,
-      fileName: 'assets/country/earth.obj',
-    );
-
-    _scene.world.add(_earth!);
-    _scene.world.add(_country!);
+    globals.scene = scene;
+    globals.scene.world.add(globals.earth);
   }
 
   @override
