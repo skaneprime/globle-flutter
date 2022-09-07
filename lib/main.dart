@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:globe_flutter_android/title.dart';
+import 'package:globe_flutter_android/game/title.dart';
 import 'package:provider/provider.dart';
 
 void main() {
