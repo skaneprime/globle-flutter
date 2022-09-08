@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:globe_flutter_android/core/core.dart';
-import 'package:globe_flutter_android/core/widgets/figures/rect.dart';
-import 'package:globe_flutter_android/core/widgets/group.dart';
+import 'package:globe_flutter_android/core/logic/core.dart';
+import 'package:globe_flutter_android/core/logic/widgets/figures/rect.dart';
+import 'package:globe_flutter_android/core/logic/widgets/group.dart';
 
-class ZCylinder extends StatelessWidget {
+class SSCylinder extends StatelessWidget {
   final double diameter;
   final double length;
 
@@ -17,7 +17,7 @@ class ZCylinder extends StatelessWidget {
   final Color? backface;
   final Color? frontface;
 
-  const ZCylinder({
+  const SSCylinder({
     super.key,
     this.diameter = 1,
     this.length = 1,
@@ -33,10 +33,10 @@ class ZCylinder extends StatelessWidget {
   Widget build(BuildContext context) {
     final baseZ = length / 2;
     final baseColor = backface;
-    final frontBase = ZPositioned(
-      translate: ZVector.only(z: baseZ),
-      rotate: const ZVector.only(y: (tau / 2)),
-      child: ZCircle(
+    final frontBase = SSPositioned(
+      translate: SSVector.only(z: baseZ),
+      rotate: const SSVector.only(y: (tau / 2)),
+      child: SSCircle(
         diameter: diameter,
         color: color,
         stroke: stroke,
@@ -45,10 +45,10 @@ class ZCylinder extends StatelessWidget {
       ),
     );
 
-    final backBase = ZPositioned(
-      translate: ZVector.only(z: -baseZ),
-      rotate: const ZVector.only(y: 0),
-      child: ZCircle(
+    final backBase = SSPositioned(
+      translate: SSVector.only(z: -baseZ),
+      rotate: const SSVector.only(y: 0),
+      child: SSCircle(
         diameter: diameter,
         color: color,
         stroke: stroke,
@@ -57,18 +57,18 @@ class ZCylinder extends StatelessWidget {
       ),
     );
 
-    return ZGroup(
+    return SSGroup(
       children: [
         frontBase,
         backBase,
-        _ZCylinderMiddle(
+        _SSCylinderMiddle(
           color: color,
           diameter: diameter,
           stroke: stroke,
           path: [
-            ZMove.vector(ZVector.only(z: baseZ)),
-            ZLine.vector(
-              ZVector.only(z: -baseZ),
+            SSMove.vector(SSVector.only(z: baseZ)),
+            SSLine.vector(
+              SSVector.only(z: -baseZ),
             )
           ],
         )
@@ -77,12 +77,12 @@ class ZCylinder extends StatelessWidget {
   }
 }
 
-class _ZCylinderMiddle extends ZShapeBuilder {
+class _SSCylinderMiddle extends SSShapeBuilder {
   final double diameter;
 
-  final List<ZPathCommand> path;
+  final List<SSPathCommand> path;
 
-  const _ZCylinderMiddle(
+  const _SSCylinderMiddle(
       {required this.diameter,
       required this.path,
       double stroke = 1,
@@ -90,8 +90,8 @@ class _ZCylinderMiddle extends ZShapeBuilder {
       : super(stroke: stroke, color: color);
 
   @override
-  RenderZCylinder createRenderObject(BuildContext context) {
-    return RenderZCylinder(
+  RenderSSCylinder createRenderObject(BuildContext context) {
+    return RenderSSCylinder(
       pathBuilder: buildPath(),
       stroke: stroke,
       diameter: diameter,
@@ -100,7 +100,7 @@ class _ZCylinderMiddle extends ZShapeBuilder {
   }
 
   @override
-  void updateRenderObject(BuildContext context, RenderZCylinder renderObject) {
+  void updateRenderObject(BuildContext context, RenderSSCylinder renderObject) {
     renderObject.diameter = diameter;
     renderObject.stroke = stroke;
     renderObject.pathBuilder = buildPath();
@@ -113,7 +113,7 @@ class _ZCylinderMiddle extends ZShapeBuilder {
   }
 }
 
-class RenderZCylinder extends RenderZShape {
+class RenderSSCylinder extends RenderSSShape {
   double _diameter;
 
   double get diameter => _diameter;
@@ -125,7 +125,7 @@ class RenderZCylinder extends RenderZShape {
     markNeedsLayout();
   }
 
-  RenderZCylinder({
+  RenderSSCylinder({
     required PathBuilder pathBuilder,
     required double diameter,
     required double stroke,
@@ -136,8 +136,8 @@ class RenderZCylinder extends RenderZShape {
   @override
   bool get needsDirection => true;
   @override
-  void render(ZRenderer renderer) {
-    final builder = ZPathBuilder()..renderPath(transformedPath);
+  void render(SSRenderer renderer) {
+    final builder = SSPathBuilder()..renderPath(transformedPath);
     var scale = normalVector.magnitude();
     var strokeWidth = diameter * scale + stroke;
 

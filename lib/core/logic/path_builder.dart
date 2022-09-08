@@ -1,5 +1,3 @@
-//@dart=2.12
-
 import 'core.dart';
 
 abstract class PathBuilder {
@@ -7,7 +5,7 @@ abstract class PathBuilder {
 
   static const empty = EmptyPathBuilder();
 
-  List<ZPathCommand> buildPath();
+  List<SSPathCommand> buildPath();
 
   bool shouldRebuildPath(covariant PathBuilder oldPathBuilder) {
     return true;
@@ -16,17 +14,17 @@ abstract class PathBuilder {
 
 class SimplePathBuilder extends PathBuilder {
   const SimplePathBuilder(this.commands);
-  final List<ZPathCommand> commands;
+  final List<SSPathCommand> commands;
 
   @override
-  List<ZPathCommand> buildPath() => commands;
+  List<SSPathCommand> buildPath() => commands;
 }
 
 class EmptyPathBuilder extends PathBuilder {
   const EmptyPathBuilder();
 
   @override
-  List<ZPathCommand> buildPath() => [];
+  List<SSPathCommand> buildPath() => [];
 
   @override
   bool shouldRebuildPath(covariant PathBuilder oldPathBuilder) {

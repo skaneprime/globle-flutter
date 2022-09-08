@@ -1,14 +1,14 @@
 import 'package:flutter/cupertino.dart';
-import 'package:globe_flutter_android/core/core.dart';
+import 'package:globe_flutter_android/core/logic/core.dart';
 import 'dart:math' as math;
 
-import 'package:globe_flutter_android/core/widgets/figures/rect.dart';
+import 'package:globe_flutter_android/core/logic/widgets/figures/rect.dart';
 
-class ZCone extends ZCircle {
+class SSCone extends SSCircle {
   final double diameter;
   final double length;
 
-  ZCone({
+  SSCone({
     required this.length,
     Key? key,
     required this.diameter,
@@ -17,7 +17,7 @@ class ZCone extends ZCircle {
     Color? backfaceColor,
     double stroke = 1,
     bool fill = true,
-    ZVector front = const ZVector.only(z: 1),
+    SSVector front = const SSVector.only(z: 1),
   })  : assert(diameter != null),
         super(
             key: key,
@@ -30,8 +30,8 @@ class ZCone extends ZCircle {
             diameter: diameter);
 
   @override
-  RenderZCone createRenderObject(BuildContext context) {
-    return RenderZCone(
+  RenderSSCone createRenderObject(BuildContext context) {
+    return RenderSSCone(
         color: color,
         pathBuilder: buildPath(),
         stroke: stroke,
@@ -45,7 +45,7 @@ class ZCone extends ZCircle {
   }
 
   @override
-  void updateRenderObject(BuildContext context, RenderZCone renderObject) {
+  void updateRenderObject(BuildContext context, RenderSSCone renderObject) {
     renderObject.color = color;
     renderObject.pathBuilder = buildPath();
     renderObject.stroke = stroke;
@@ -59,7 +59,7 @@ class ZCone extends ZCircle {
   }
 }
 
-class RenderZCone extends RenderZShape {
+class RenderSSCone extends RenderSSShape {
   double _length;
 
   double get length => _length;
@@ -82,12 +82,12 @@ class RenderZCone extends RenderZShape {
     markNeedsLayout();
   }
 
-  RenderZCone({
+  RenderSSCone({
     required double length,
     required double diameter,
     required Color color,
     Color? backfaceColor,
-    ZVector front = const ZVector.only(z: 1),
+    SSVector front = const SSVector.only(z: 1),
     bool close = false,
     bool visible = true,
     bool fill = false,
@@ -108,17 +108,17 @@ class RenderZCone extends RenderZShape {
           pathBuilder: pathBuilder,
         );
 
-  ZVector tangentA = ZVector.zero;
-  ZVector tangentB = ZVector.zero;
+  SSVector tangentA = SSVector.zero;
+  SSVector tangentB = SSVector.zero;
 
-  ZVector? apex;
+  SSVector? apex;
 
   @override
   void performTransformation() {
     super.performTransformation();
-    final ZParentData anchorParentData = parentData as ZParentData;
+    final ParentSSData anchorParentData = parentData as ParentSSData;
 
-    apex = ZVector.only(z: length);
+    apex = SSVector.only(z: length);
     for (var matrix4 in anchorParentData.transforms.reversed) {
       apex = apex!.transform(matrix4.translate, matrix4.rotate, matrix4.scale);
     }
@@ -126,14 +126,14 @@ class RenderZCone extends RenderZShape {
 
   @override
   void performSort() {
-    final renderCentroid = ZVector.lerp(origin, apex, 1 / 3);
+    final renderCentroid = SSVector.lerp(origin, apex, 1 / 3);
     sortValue = renderCentroid.z;
   }
 
-  ZVector renderApex = ZVector.zero;
+  SSVector renderApex = SSVector.zero;
 
   @override
-  void render(ZRenderer renderer) {
+  void render(SSRenderer renderer) {
     _renderConeSurface(renderer);
     super.render(renderer);
   }
@@ -141,7 +141,7 @@ class RenderZCone extends RenderZShape {
   @override
   bool get needsDirection => true;
 
-  void _renderConeSurface(ZRenderer renderer) {
+  void _renderConeSurface(SSRenderer renderer) {
     if (!visible) {
       return;
     }
@@ -149,11 +149,9 @@ class RenderZCone extends RenderZShape {
     final scale = normalVector.magnitude();
     final apexDistance = renderApex.magnitude2d();
     final normalDistance = normalVector.magnitude2d();
-    // eccentricity
     final eccenAngle = math.acos(normalDistance / scale);
     final eccen = math.sin(eccenAngle);
     final radius = diameter / 2 * scale;
-    // does apex extend beyond eclipse of fac
     final isApexVisible = radius * eccen < apexDistance;
     if (!isApexVisible) {
       return;
@@ -166,17 +164,17 @@ class RenderZCone extends RenderZShape {
     final xA = math.cos(projectAngle) * radius * eccen;
     final yA = math.sin(projectAngle) * radius;
     tangentA = tangentA.copyWith(x: xA, y: yA);
-    tangentB = tangentA.multiply(ZVector.identity.copyWith(y: -1));
+    tangentB = tangentA.multiply(SSVector.identity.copyWith(y: -1));
 
     tangentA = tangentA.rotateZ(apexAngle).addVector(origin);
     tangentB = tangentB.rotateZ(apexAngle).addVector(origin);
 
     final path = [
-      ZMove.vector(tangentA),
-      ZLine.vector(apex!),
-      ZLine.vector(tangentB),
+      SSMove.vector(tangentA),
+      SSLine.vector(apex!),
+      SSLine.vector(tangentB),
     ];
-    final builder = ZPathBuilder()..renderPath(path);
+    final builder = SSPathBuilder()..renderPath(path);
 
     if (stroke > 0) renderer.stroke(builder.path, color, stroke);
     if (fill) renderer.fill(builder.path, color);

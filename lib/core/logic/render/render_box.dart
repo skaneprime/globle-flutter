@@ -1,11 +1,8 @@
-//@dart=2.12
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
-
 import '../core.dart';
 
-abstract class RenderZBox extends RenderBox {
+abstract class RenderSSBox extends RenderBox {
   bool _debugSortedValue = false;
   bool _debugTransformedValue = false;
 
@@ -31,7 +28,7 @@ abstract class RenderZBox extends RenderBox {
     final anchorParentData = parentData;
 
     _matrix = Matrix4.identity();
-    if (anchorParentData is ZParentData) {
+    if (anchorParentData is ParentSSData) {
       for (var transform in anchorParentData.transforms) {
         final matrix4 = Matrix4.translationValues(transform.translate.x,
             transform.translate.y, transform.translate.z);
@@ -53,7 +50,7 @@ abstract class RenderZBox extends RenderBox {
 
   void performSort();
 
-  int compareSort(RenderZBox renderBox) {
+  int compareSort(RenderSSBox renderBox) {
     return sortValue.compareTo(renderBox.sortValue);
   }
 
@@ -87,24 +84,19 @@ abstract class RenderZBox extends RenderBox {
 }
 
 enum SortMode {
-  // Each child inside the group is sorted by its own center
-  // The group acts as a proxy
   inherit,
-  // Children are sorted following the order in the list
   stack,
-  // Children are encapsulated and painted in the order described
-  // The group is painted by
   update,
 }
 
-class RenderMultiChildZBox extends RenderZBox
+class RenderMultiChildBoxSS extends RenderSSBox
     with
-        ContainerRenderObjectMixin<RenderZBox, ZParentData>,
-        RenderBoxContainerDefaultsMixin<RenderZBox, ZParentData> {
-  RenderMultiChildZBox({
-    List<RenderZBox>? children,
+        ContainerRenderObjectMixin<RenderSSBox, ParentSSData>,
+        RenderBoxContainerDefaultsMixin<RenderSSBox, ParentSSData> {
+  RenderMultiChildBoxSS({
+    List<RenderSSBox>? children,
     SortMode? sortMode = SortMode.inherit,
-    ZVector? sortPoint,
+    SSVector? sortPoint,
   })  : assert(sortMode != null),
         sortMode = sortMode,
         _sortPoint = sortPoint {
@@ -112,13 +104,13 @@ class RenderMultiChildZBox extends RenderZBox
   }
 
   @override
-  void setupParentData(RenderZBox child) {
-    if (parentData is ZParentData) {
-      child.parentData = (parentData as ZParentData).clone();
+  void setupParentData(RenderSSBox child) {
+    if (parentData is ParentSSData) {
+      child.parentData = (parentData as ParentSSData).clone();
       return;
     }
-    if (child.parentData is! ZParentData) {
-      child.parentData = ZParentData();
+    if (child.parentData is! ParentSSData) {
+      child.parentData = ParentSSData();
     }
   }
 
@@ -129,11 +121,12 @@ class RenderMultiChildZBox extends RenderZBox
   void performTransformation() {
     final BoxConstraints constraints = this.constraints;
 
-    RenderZBox? child = firstChild;
+    RenderSSBox? child = firstChild;
 
     while (child != null) {
-      final ZParentData childParentData = child.parentData as ZParentData;
-      if (child is RenderMultiChildZBox && child.sortMode == SortMode.inherit) {
+      final ParentSSData childParentData = child.parentData as ParentSSData;
+      if (child is RenderMultiChildBoxSS &&
+          child.sortMode == SortMode.inherit) {
         child.layout(constraints, parentUsesSize: true);
       } else {
         child.layout(constraints, parentUsesSize: true);
@@ -142,15 +135,15 @@ class RenderMultiChildZBox extends RenderZBox
     }
   }
 
-  ZVector? get sortPoint => _sortPoint;
-  ZVector? _sortPoint;
-  set sortPoint(ZVector? value) {
+  SSVector? get sortPoint => _sortPoint;
+  SSVector? _sortPoint;
+  set sortPoint(SSVector? value) {
     if (value == sortPoint) return;
     _sortPoint = value;
     markNeedsLayout();
   }
 
-  List<RenderZBox>? sortedChildren;
+  List<RenderSSBox>? sortedChildren;
 
   @override
   void performSort() {
@@ -173,15 +166,16 @@ class RenderMultiChildZBox extends RenderZBox
 
   SortMode? sortMode;
 
-  List<RenderZBox> _getFlatChildren() {
-    List<RenderZBox> children = [];
+  List<RenderSSBox> _getFlatChildren() {
+    List<RenderSSBox> children = [];
 
-    RenderZBox? child = firstChild;
+    RenderSSBox? child = firstChild;
 
     while (child != null) {
-      final ZParentData childParentData = child.parentData as ZParentData;
+      final ParentSSData childParentData = child.parentData as ParentSSData;
 
-      if (child is RenderMultiChildZBox && child.sortMode == SortMode.inherit) {
+      if (child is RenderMultiChildBoxSS &&
+          child.sortMode == SortMode.inherit) {
         children.addAll(child._getFlatChildren());
       } else {
         children.add(child);
@@ -205,8 +199,7 @@ class RenderMultiChildZBox extends RenderZBox
   bool defaultHitTestChildren(BoxHitTestResult result,
       {required Offset position}) {
     if (sortMode == SortMode.inherit) return false;
-    // The x, y parameters have the top left of the node's box as the origin.
-    List<RenderZBox> children = sortedChildren!;
+    List<RenderSSBox> children = sortedChildren!;
 
     for (final child in children.reversed) {
       final bool isHit = child.hitTest(result, position: position);
@@ -231,17 +224,16 @@ class RenderMultiChildZBox extends RenderZBox
   }
 }
 
-/// Parent data for use with [ZRenderer].
-class ZParentData extends ContainerBoxParentData<RenderZBox> {
-  List<ZTransform> transforms;
+class ParentSSData extends ContainerBoxParentData<RenderSSBox> {
+  List<SSTransform> transforms;
 
-  ZParentData({
-    List<ZTransform>? transforms,
+  ParentSSData({
+    List<SSTransform>? transforms,
   }) : transforms = transforms ?? [];
 
-  ZParentData clone() {
-    return ZParentData(
-      transforms: List<ZTransform>.from(transforms),
+  ParentSSData clone() {
+    return ParentSSData(
+      transforms: List<SSTransform>.from(transforms),
     );
   }
 }

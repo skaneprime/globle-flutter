@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:globe_flutter_android/core/core.dart';
+import 'package:globe_flutter_android/core/logic/core.dart';
 
-class ZRenderer {
+class SSRenderer {
   Paint paint = Paint()
     ..isAntiAlias = true
     ..strokeCap = StrokeCap.round
@@ -9,7 +9,7 @@ class ZRenderer {
 
   final Canvas? canvas;
 
-  ZRenderer(this.canvas);
+  SSRenderer(this.canvas);
 
   void setLineCap(StrokeCap value) {
     paint.strokeCap = value;
@@ -29,24 +29,24 @@ class ZRenderer {
   }
 }
 
-class ZPathBuilder {
+class SSPathBuilder {
   Path path = Path();
 
-  ZPathBuilder();
+  SSPathBuilder();
 
   void begin() {
     path.reset();
   }
 
-  void move(ZVector point) {
+  void move(SSVector point) {
     path.moveTo(point.x, point.y);
   }
 
-  void line(ZVector point) {
+  void line(SSVector point) {
     path.lineTo(point.x, point.y);
   }
 
-  void bezier(ZVector cp0, ZVector cp1, ZVector end) {
+  void bezier(SSVector cp0, SSVector cp1, SSVector end) {
     path.cubicTo(
       cp0.x,
       cp0.y,
@@ -72,9 +72,9 @@ class ZPathBuilder {
     path.close();
   }
 
-  Path renderPath(List<ZPathCommand> pathCommands, {bool isClosed = false}) {
+  Path renderPath(List<SSPathCommand> pathCommands, {bool isClosed = false}) {
     begin();
-    ZVector previousPoint = ZVector.zero;
+    SSVector previousPoint = SSVector.zero;
     for (var it in pathCommands) {
       it.render(this, previousPoint);
       previousPoint = it.endRenderPoint;

@@ -2,25 +2,20 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:globe_flutter_android/core/core.dart';
-import 'package:globe_flutter_android/core/widgets/figures/rect.dart';
+import 'package:globe_flutter_android/core/logic/core.dart';
+import 'package:globe_flutter_android/core/logic/widgets/figures/rect.dart';
 import 'dart:math' as math;
 
 import '../group.dart';
 
-class ZHemisphere extends StatelessWidget {
+class SSHemisphere extends StatelessWidget {
   final double diameter;
-
   final double stroke;
-
   final Color color;
   final bool visible;
-
-  // final ZVector front;
   final Color? backfaceColor;
 
-  //var front = ZVector.only(z: 1);
-  const ZHemisphere({
+  const SSHemisphere({
     super.key,
     this.diameter = 1,
     this.stroke = 1,
@@ -31,15 +26,15 @@ class ZHemisphere extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ZGroup(
+    return SSGroup(
       sortMode: SortMode.stack,
       children: [
-        _ZCylinderMiddle(
+        _SSCylinderMiddle(
           color: color,
           diameter: diameter,
           stroke: stroke,
         ),
-        ZCircle(
+        SSCircle(
           diameter: diameter,
           backfaceColor: backfaceColor,
           color: color,
@@ -51,18 +46,18 @@ class ZHemisphere extends StatelessWidget {
   }
 }
 
-class _ZCylinderMiddle extends ZShapeBuilder {
+class _SSCylinderMiddle extends SSShapeBuilder {
   final double diameter;
 
-  const _ZCylinderMiddle({
+  const _SSCylinderMiddle({
     required this.diameter,
     double stroke = 1,
     required Color color,
   }) : super(stroke: stroke, color: color);
 
   @override
-  _RenderZHemisphere createRenderObject(BuildContext context) {
-    return _RenderZHemisphere(
+  _RenderSSHemisphere createRenderObject(BuildContext context) {
+    return _RenderSSHemisphere(
       pathBuilder: buildPath(),
       stroke: stroke,
       diameter: diameter,
@@ -72,7 +67,7 @@ class _ZCylinderMiddle extends ZShapeBuilder {
 
   @override
   void updateRenderObject(
-      BuildContext context, _RenderZHemisphere renderObject) {
+      BuildContext context, _RenderSSHemisphere renderObject) {
     renderObject.diameter = diameter;
     renderObject.stroke = stroke;
     renderObject.pathBuilder = buildPath();
@@ -85,7 +80,7 @@ class _ZCylinderMiddle extends ZShapeBuilder {
   }
 }
 
-class _RenderZHemisphere extends RenderZShape {
+class _RenderSSHemisphere extends RenderSSShape {
   double _diameter;
 
   double get diameter => _diameter;
@@ -97,14 +92,14 @@ class _RenderZHemisphere extends RenderZShape {
     markNeedsLayout();
   }
 
-  ZVector? apex;
+  SSVector? apex;
   @override
   void performTransformation() {
     super.performTransformation();
-    final ZParentData anchorParentData = parentData as ZParentData;
+    final ParentSSData anchorParentData = parentData as ParentSSData;
 
     // print('relayout ${anchorParentData.transforms.length}');
-    apex = ZVector.only(z: diameter / 2);
+    apex = SSVector.only(z: diameter / 2);
     for (var matrix4 in anchorParentData.transforms.reversed) {
       apex = apex!.transform(matrix4.translate, matrix4.rotate, matrix4.scale);
     }
@@ -112,11 +107,11 @@ class _RenderZHemisphere extends RenderZShape {
 
   @override
   void performSort() {
-    final renderCentroid = ZVector.lerp(origin, apex, 3 / 8);
+    final renderCentroid = SSVector.lerp(origin, apex, 3 / 8);
     sortValue = renderCentroid.z;
   }
 
-  _RenderZHemisphere(
+  _RenderSSHemisphere(
       {required PathBuilder pathBuilder,
       required double diameter,
       required double stroke,
@@ -129,7 +124,7 @@ class _RenderZHemisphere extends RenderZShape {
   bool get needsDirection => true;
 
   @override
-  void render(ZRenderer renderer) {
+  void render(SSRenderer renderer) {
     final contourAngle = math.atan2(normalVector.y, normalVector.x);
     final demoRadius = diameter / 2 * normalVector.magnitude();
     final x = origin.x;
@@ -137,7 +132,7 @@ class _RenderZHemisphere extends RenderZShape {
 
     final startAngle = contourAngle + tau / 4;
     final endAnchor = contourAngle - tau / 4;
-    final builder = ZPathBuilder();
+    final builder = SSPathBuilder();
     builder.begin();
     builder.move(origin);
     builder.arc(x, y, demoRadius, startAngle, endAnchor);

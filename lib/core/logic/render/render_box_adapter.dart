@@ -1,9 +1,7 @@
-//@dart=2.12
 import 'package:flutter/rendering.dart';
-
 import '../core.dart';
 
-class RenderZToBoxAdapter extends RenderZBox
+class RenderToBoxAdapter extends RenderSSBox
     with RenderObjectWithChildMixin<RenderBox> {
   double _width;
 
@@ -25,7 +23,7 @@ class RenderZToBoxAdapter extends RenderZBox
     markNeedsLayout();
   }
 
-  RenderZToBoxAdapter({
+  RenderToBoxAdapter({
     required double width,
     required double height,
   })  : _width = width,
@@ -34,7 +32,7 @@ class RenderZToBoxAdapter extends RenderZBox
   @override
   bool get isRepaintBoundary => true;
 
-  List<ZPathCommand>? transformedPath;
+  List<SSPathCommand>? transformedPath;
 
   @override
   void performLayout() {
@@ -45,10 +43,10 @@ class RenderZToBoxAdapter extends RenderZBox
     super.performLayout();
   }
 
-  ZVector origin = ZVector.zero;
+  SSVector origin = SSVector.zero;
   @override
   void performTransformation() {
-    origin = ZVector.zero.applyMatrix4(matrix);
+    origin = SSVector.zero.applyMatrix4(matrix);
   }
 
   @override
@@ -75,10 +73,6 @@ class RenderZToBoxAdapter extends RenderZBox
 
   @override
   bool hitTest(BoxHitTestResult result, {required Offset position}) {
-    // RenderZToBoxAdapter objects don't check if they are
-    // themselves hit, because it's confusing to think about
-    // how the untransformed size and the child's transformed
-    // position interact.
     return hitTestChildren(result, position: position);
   }
 

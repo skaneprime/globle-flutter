@@ -1,9 +1,8 @@
-//@dart=2.12
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import '../core.dart';
 
-class RenderZShape extends RenderZBox {
+class RenderSSShape extends RenderSSBox {
   Color _color;
 
   Color get color => _color;
@@ -21,7 +20,6 @@ class RenderZShape extends RenderZBox {
   set backfaceColor(Color? value) {
     if (_backfaceColor == value) return;
     if (_backfaceColor == null) {
-      // It needs to calculate normalVector when there is backface color
       return markNeedsLayout();
     }
     _backfaceColor = value;
@@ -48,19 +46,19 @@ class RenderZShape extends RenderZBox {
     markNeedsPaint();
   }
 
-  ZVector _front;
+  SSVector _front;
 
-  ZVector get front => _front;
+  SSVector get front => _front;
 
-  set front(ZVector value) {
+  set front(SSVector value) {
     if (_front == value) return;
     _front = value;
     markNeedsLayout();
   }
 
-  List<ZPathCommand> _path;
-  List<ZPathCommand> get path => _path;
-  set path(List<ZPathCommand> value) {
+  List<SSPathCommand> _path;
+  List<SSPathCommand> get path => _path;
+  set path(List<SSPathCommand> value) {
     if (_path == value) return;
     _path = value;
 
@@ -77,10 +75,10 @@ class RenderZShape extends RenderZBox {
     _pathBuilder = value;
   }
 
-  ZVector? _sortPoint;
-  ZVector? get sortPoint => _sortPoint;
+  SSVector? _sortPoint;
+  SSVector? get sortPoint => _sortPoint;
 
-  set sortPoint(ZVector? value) {
+  set sortPoint(SSVector? value) {
     if (_sortPoint == value) return;
     _sortPoint = value;
     markNeedsLayout();
@@ -105,16 +103,16 @@ class RenderZShape extends RenderZBox {
     _stroke = value;
   }
 
-  RenderZShape({
+  RenderSSShape({
     required Color color,
     Color? backfaceColor,
-    ZVector front = const ZVector.only(z: 1),
+    SSVector front = const SSVector.only(z: 1),
     bool close = false,
     bool visible = true,
     bool fill = false,
     double stroke = 1,
     PathBuilder pathBuilder = PathBuilder.empty,
-    ZVector? sortPoint,
+    SSVector? sortPoint,
   })  : assert(stroke >= 0),
         _stroke = stroke,
         _visible = visible,
@@ -130,41 +128,37 @@ class RenderZShape extends RenderZBox {
   @override
   bool get sizedByParent => true;
 
-  /// With this markNeedsPaint will only repaint this core object and not their ancestors
-  //bool get isRepaintBoundary => true;
-
   bool get needsDirection => backfaceColor != null;
 
-  ZVector? _normalVector;
-  ZVector get normalVector {
+  SSVector? _normalVector;
+  SSVector get normalVector {
     assert(needsDirection,
         'needs direction needs to be true so normal vector can be retrieved');
     debugTransformed();
     return _normalVector!;
   }
 
-  ZVector origin = ZVector.zero;
+  SSVector origin = SSVector.zero;
 
-  ZVector? transformedSortPoint;
+  SSVector? transformedSortPoint;
 
   @override
   void performTransformation() {
-    origin = ZVector.zero.applyMatrix4(matrix);
+    origin = SSVector.zero.applyMatrix4(matrix);
 
-    /// To optimize we calculate the sort point position
-    if (sortPoint == ZVector.zero) {
+    if (sortPoint == SSVector.zero) {
       transformedSortPoint = origin;
-    } else if (sortPoint == ZVector.zero) {
+    } else if (sortPoint == SSVector.zero) {
       transformedSortPoint = sortPoint!.applyMatrix4(matrix);
     } else {
       transformedSortPoint = null;
     }
 
-    transformedPath = <ZPathCommand>[
+    transformedPath = <SSPathCommand>[
       if (path.isEmpty)
-        ZMove(0, 0, 0)
-      else if (path.first is! ZMove)
-        ZMove.vector(path.first.point()),
+        SSMove(0, 0, 0)
+      else if (path.first is! SSMove)
+        SSMove.vector(path.first.point()),
       ...path,
     ].map((e) => e.transform(matrix)).toList();
 
@@ -173,7 +167,7 @@ class RenderZShape extends RenderZBox {
     }
   }
 
-  List<ZPathCommand> transformedPath = [];
+  List<SSPathCommand> transformedPath = [];
 
   @override
   void performSort() {
@@ -209,11 +203,11 @@ class RenderZShape extends RenderZBox {
   @override
   void paint(PaintingContext context, Offset offset) {
     super.paint(context, offset);
-    assert(parentData is ZParentData);
+    assert(parentData is ParentData);
 
     if (!visible || renderColor == Colors.transparent) return;
 
-    final renderer = ZRenderer(context.canvas);
+    final renderer = SSRenderer(context.canvas);
     render(renderer);
     final length = path.length;
     if (length <= 1) {
@@ -223,10 +217,10 @@ class RenderZShape extends RenderZBox {
         return super.paint(context, offset);
       }
 
-      final isTwoPoints = transformedPath.length == 2 && (path[1] is ZLine);
+      final isTwoPoints = transformedPath.length == 2 && (path[1] is SSLine);
       var isClosed = !isTwoPoints && _close == true;
       final color = renderColor;
-      final builder = ZPathBuilder()
+      final builder = SSPathBuilder()
         ..renderPath(transformedPath, isClosed: isClosed);
 
       if (stroke > 0) renderer.stroke(builder.path, color, stroke);
@@ -236,14 +230,14 @@ class RenderZShape extends RenderZBox {
     //  context.canvas.restore();
   }
 
-  void paintDot(ZRenderer renderer) {
+  void paintDot(SSRenderer renderer) {
     if (stroke == 0.0) {
       return;
     }
     final color = renderColor;
 
     final point = transformedPath.first.endRenderPoint;
-    final builder = ZPathBuilder();
+    final builder = SSPathBuilder();
     builder.begin();
     final radius = stroke / 2;
     builder.circle(point.x, point.y, radius);
@@ -251,13 +245,13 @@ class RenderZShape extends RenderZBox {
     renderer.fill(builder.path, color);
   }
 
-  void render(ZRenderer renderer) {}
+  void render(SSRenderer renderer) {}
 
   @override
   bool hitTestSelf(Offset position) {
-    var isTwoPoints = transformedPath.length == 2 && (path[1] is ZLine);
+    var isTwoPoints = transformedPath.length == 2 && (path[1] is SSLine);
     var isClosed = !isTwoPoints && _close == true;
-    final builder = ZPathBuilder();
+    final builder = SSPathBuilder();
     builder.renderPath(transformedPath, isClosed: isClosed);
     final hit = builder.path.contains(position);
     return hit;

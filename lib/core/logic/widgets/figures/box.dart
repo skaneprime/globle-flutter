@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:globe_flutter_android/core/core.dart';
-import 'package:globe_flutter_android/core/widgets/figures/rect.dart';
-import 'package:globe_flutter_android/core/widgets/group.dart';
+import 'package:globe_flutter_android/core/logic/core.dart';
+import 'package:globe_flutter_android/core/logic/widgets/figures/rect.dart';
+import 'package:globe_flutter_android/core/logic/widgets/group.dart';
 
-class ZBox extends StatelessWidget {
+class SSBox extends StatelessWidget {
   final double width;
   final double height;
   final double depth;
@@ -22,7 +22,8 @@ class ZBox extends StatelessWidget {
   final Color? topColor;
   final Color? bottomColor;
 
-  const ZBox({super.key, 
+  const SSBox({
+    super.key,
     required this.width,
     required this.height,
     required this.depth,
@@ -38,9 +39,9 @@ class ZBox extends StatelessWidget {
     this.bottomColor,
   });
 
-  Widget get frontFace => ZPositioned(
-        translate: ZVector.only(z: depth / 2),
-        child: ZRect(
+  Widget get frontFace => SSPositioned(
+        translate: SSVector.only(z: depth / 2),
+        child: SSRect(
           color: frontColor ?? color,
           fill: fill,
           stroke: stroke,
@@ -49,10 +50,10 @@ class ZBox extends StatelessWidget {
         ),
       );
 
-  Widget get rearFace => ZPositioned(
-        translate: ZVector.only(z: -depth / 2),
-        rotate: const ZVector.only(y: tau / 2),
-        child: ZRect(
+  Widget get rearFace => SSPositioned(
+        translate: SSVector.only(z: -depth / 2),
+        rotate: const SSVector.only(y: tau / 2),
+        child: SSRect(
           width: width,
           height: height,
           color: rearColor ?? color,
@@ -61,10 +62,10 @@ class ZBox extends StatelessWidget {
         ),
       );
 
-  Widget get leftFace => ZPositioned(
-        translate: ZVector.only(x: -width / 2),
-        rotate: const ZVector.only(y: -tau / 4),
-        child: ZRect(
+  Widget get leftFace => SSPositioned(
+        translate: SSVector.only(x: -width / 2),
+        rotate: const SSVector.only(y: -tau / 4),
+        child: SSRect(
           width: depth,
           height: height,
           stroke: stroke,
@@ -73,10 +74,10 @@ class ZBox extends StatelessWidget {
         ),
       );
 
-  Widget get rightFace => ZPositioned(
-        translate: ZVector.only(x: width / 2),
-        rotate: const ZVector.only(y: tau / 4),
-        child: ZRect(
+  Widget get rightFace => SSPositioned(
+        translate: SSVector.only(x: width / 2),
+        rotate: const SSVector.only(y: tau / 4),
+        child: SSRect(
           width: depth,
           color: rightColor ?? color,
           height: height,
@@ -85,10 +86,10 @@ class ZBox extends StatelessWidget {
         ),
       );
 
-  Widget get topFace => ZPositioned(
-        translate: ZVector.only(y: -height / 2),
-        rotate: const ZVector.only(x: -tau / 4),
-        child: ZRect(
+  Widget get topFace => SSPositioned(
+        translate: SSVector.only(y: -height / 2),
+        rotate: const SSVector.only(x: -tau / 4),
+        child: SSRect(
           width: width,
           color: topColor ?? color,
           height: depth,
@@ -97,10 +98,10 @@ class ZBox extends StatelessWidget {
         ),
       );
 
-  Widget get bottomFace => ZPositioned(
-        translate: ZVector.only(y: height / 2),
-        rotate: const ZVector.only(x: tau / 4),
-        child: ZRect(
+  Widget get bottomFace => SSPositioned(
+        translate: SSVector.only(y: height / 2),
+        rotate: const SSVector.only(x: tau / 4),
+        child: SSRect(
           width: width,
           color: bottomColor ?? color,
           stroke: stroke,
@@ -111,7 +112,7 @@ class ZBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ZGroup(
+    return SSGroup(
       children: [
         frontFace,
         rearFace,
@@ -124,7 +125,7 @@ class ZBox extends StatelessWidget {
   }
 }
 
-class ZBoxToBoxAdapter extends StatelessWidget {
+class SSBoxToBoxAdapter extends StatelessWidget {
   final double width;
   final double height;
   final double depth;
@@ -142,7 +143,8 @@ class ZBoxToBoxAdapter extends StatelessWidget {
   final Widget? top;
   final Widget? bottom;
 
-  const ZBoxToBoxAdapter({super.key, 
+  const SSBoxToBoxAdapter({
+    super.key,
     required this.width,
     required this.height,
     required this.depth,
@@ -158,15 +160,15 @@ class ZBoxToBoxAdapter extends StatelessWidget {
     this.bottom,
   });
 
-  Widget get frontFace => ZPositioned(
-        translate: ZVector.only(z: depth / 2),
+  Widget get frontFace => SSPositioned(
+        translate: SSVector.only(z: depth / 2),
         child: front != null
-            ? ZToBoxAdapter(
+            ? SSToBoxAdapter(
                 height: height,
                 width: width,
                 child: front,
               )
-            : ZRect(
+            : SSRect(
                 color: color,
                 fill: fill,
                 stroke: stroke,
@@ -175,16 +177,16 @@ class ZBoxToBoxAdapter extends StatelessWidget {
               ),
       );
 
-  Widget get rearFace => ZPositioned(
-        translate: ZVector.only(z: -depth / 2),
-        rotate: const ZVector.only(y: tau / 2),
+  Widget get rearFace => SSPositioned(
+        translate: SSVector.only(z: -depth / 2),
+        rotate: const SSVector.only(y: tau / 2),
         child: rear != null
-            ? ZToBoxAdapter(
+            ? SSToBoxAdapter(
                 width: width,
                 height: height,
                 child: rear,
               )
-            : ZRect(
+            : SSRect(
                 width: width,
                 height: height,
                 color: color,
@@ -193,16 +195,16 @@ class ZBoxToBoxAdapter extends StatelessWidget {
               ),
       );
 
-  Widget get leftFace => ZPositioned(
-        translate: ZVector.only(x: -width / 2),
-        rotate: const ZVector.only(y: -tau / 4),
+  Widget get leftFace => SSPositioned(
+        translate: SSVector.only(x: -width / 2),
+        rotate: const SSVector.only(y: -tau / 4),
         child: left != null
-            ? ZToBoxAdapter(
+            ? SSToBoxAdapter(
                 width: depth,
                 height: height,
                 child: left,
               )
-            : ZRect(
+            : SSRect(
                 width: depth,
                 height: height,
                 stroke: stroke,
@@ -211,16 +213,16 @@ class ZBoxToBoxAdapter extends StatelessWidget {
               ),
       );
 
-  Widget get rightFace => ZPositioned(
-        translate: ZVector.only(x: width / 2),
-        rotate: const ZVector.only(y: tau / 4),
+  Widget get rightFace => SSPositioned(
+        translate: SSVector.only(x: width / 2),
+        rotate: const SSVector.only(y: tau / 4),
         child: right != null
-            ? ZToBoxAdapter(
+            ? SSToBoxAdapter(
                 width: depth,
                 height: height,
                 child: right,
               )
-            : ZRect(
+            : SSRect(
                 width: depth,
                 height: height,
                 color: color,
@@ -229,16 +231,16 @@ class ZBoxToBoxAdapter extends StatelessWidget {
               ),
       );
 
-  Widget get topFace => ZPositioned(
-        translate: ZVector.only(y: -height / 2),
-        rotate: const ZVector.only(x: -tau / 4),
+  Widget get topFace => SSPositioned(
+        translate: SSVector.only(y: -height / 2),
+        rotate: const SSVector.only(x: -tau / 4),
         child: top != null
-            ? ZToBoxAdapter(
+            ? SSToBoxAdapter(
                 width: width,
                 height: depth,
                 child: top,
               )
-            : ZRect(
+            : SSRect(
                 width: width,
                 height: depth,
                 color: color,
@@ -247,16 +249,16 @@ class ZBoxToBoxAdapter extends StatelessWidget {
               ),
       );
 
-  Widget get bottomFace => ZPositioned(
-        translate: ZVector.only(y: height / 2),
-        rotate: const ZVector.only(x: tau / 4),
+  Widget get bottomFace => SSPositioned(
+        translate: SSVector.only(y: height / 2),
+        rotate: const SSVector.only(x: tau / 4),
         child: bottom != null
-            ? ZToBoxAdapter(
+            ? SSToBoxAdapter(
                 width: width,
                 height: depth,
                 child: bottom,
               )
-            : ZRect(
+            : SSRect(
                 width: width,
                 height: depth,
                 color: color,
@@ -267,7 +269,7 @@ class ZBoxToBoxAdapter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ZGroup(
+    return SSGroup(
       children: [
         frontFace,
         rearFace,

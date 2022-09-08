@@ -1,9 +1,9 @@
 import 'package:flutter/widgets.dart';
-import 'package:globe_flutter_android/core/core.dart';
+import 'package:globe_flutter_android/core/logic/core.dart';
 import 'dart:math' as math;
 
-class ZRect extends ZShapeBuilder {
-  const ZRect({
+class SSRect extends SSShapeBuilder {
+  const SSRect({
     Key? key,
     required this.width,
     required this.height,
@@ -11,7 +11,7 @@ class ZRect extends ZShapeBuilder {
     Color? backfaceColor,
     double stroke = 1,
     bool fill = false,
-    ZVector front = const ZVector.only(z: 1),
+    SSVector front = const SSVector.only(z: 1),
   }) : super(
           key: key,
           color: color,
@@ -20,11 +20,10 @@ class ZRect extends ZShapeBuilder {
           closed: true,
           fill: fill,
           front: front,
-          sortPoint: ZVector.zero,
+          sortPoint: SSVector.zero,
         );
 
   final double width;
-
   final double height;
 
   @override
@@ -35,20 +34,19 @@ class ZRect extends ZShapeBuilder {
 
 class RectPathBuilder extends PathBuilder {
   final double width;
-
   final double height;
 
   RectPathBuilder(this.width, this.height);
 
   @override
-  List<ZPathCommand> buildPath() {
+  List<SSPathCommand> buildPath() {
     final x = width / 2;
     final y = height / 2;
     return [
-      ZMove.vector(ZVector.only(x: -x, y: -y)),
-      ZLine.vector(ZVector.only(x: x, y: -y)),
-      ZLine.vector(ZVector.only(x: x, y: y)),
-      ZLine.vector(ZVector.only(x: -x, y: y))
+      SSMove.vector(SSVector.only(x: -x, y: -y)),
+      SSLine.vector(SSVector.only(x: x, y: -y)),
+      SSLine.vector(SSVector.only(x: x, y: y)),
+      SSLine.vector(SSVector.only(x: -x, y: y))
     ];
   }
 
@@ -60,12 +58,12 @@ class RectPathBuilder extends PathBuilder {
   }
 }
 
-class ZRoundedRect extends ZShapeBuilder {
+class SSRoundedRect extends SSShapeBuilder {
   final double width;
   final double height;
   final double borderRadius;
 
-  const ZRoundedRect({
+  const SSRoundedRect({
     Key? key,
     required this.width,
     required this.height,
@@ -74,7 +72,7 @@ class ZRoundedRect extends ZShapeBuilder {
     Color? backfaceColor,
     double stroke = 1,
     bool fill = false,
-    ZVector front = const ZVector.only(z: 1),
+    SSVector front = const SSVector.only(z: 1),
   }) : super(
           key: key,
           color: color,
@@ -83,7 +81,7 @@ class ZRoundedRect extends ZShapeBuilder {
           closed: true,
           fill: fill,
           front: front,
-          sortPoint: ZVector.zero,
+          sortPoint: SSVector.zero,
         );
 
   @override
@@ -94,15 +92,13 @@ class ZRoundedRect extends ZShapeBuilder {
 
 class RoundedRectPathBuilder extends PathBuilder {
   final double width;
-
   final double height;
-
   final double borderRadius;
 
   RoundedRectPathBuilder(this.width, this.height, this.borderRadius);
 
   @override
-  List<ZPathCommand> buildPath() {
+  List<SSPathCommand> buildPath() {
     var xA = width / 2;
     var yA = height / 2;
     var shortSide = math.min(xA, yA);
@@ -110,52 +106,48 @@ class RoundedRectPathBuilder extends PathBuilder {
     var xB = xA - cornerRadius;
     var yB = yA - cornerRadius;
     var path = [
-      // top right corner
-      ZMove.vector(ZVector.only(x: xB, y: -yA)),
-      ZArc.list(
+      SSMove.vector(SSVector.only(x: xB, y: -yA)),
+      SSArc.list(
         [
-          ZVector.only(x: xA, y: -yA),
-          ZVector.only(x: xA, y: -yB),
+          SSVector.only(x: xA, y: -yA),
+          SSVector.only(x: xA, y: -yB),
         ],
         null,
       ),
     ];
-    // bottom right corner
+
     if (yB != 0) {
-      path.add(ZLine.vector(ZVector.only(x: xA, y: yB)));
+      path.add(SSLine.vector(SSVector.only(x: xA, y: yB)));
     }
-    path.add(ZArc.list(
+    path.add(SSArc.list(
       [
-        ZVector.only(x: xA, y: yA),
-        ZVector.only(x: xB, y: yA),
+        SSVector.only(x: xA, y: yA),
+        SSVector.only(x: xB, y: yA),
       ],
       null,
     ));
 
-    // bottom left corner
     if (xB != 0) {
-      path.add(ZLine.vector(ZVector.only(x: -xB, y: yA)));
+      path.add(SSLine.vector(SSVector.only(x: -xB, y: yA)));
     }
-    path.add(ZArc.list(
+    path.add(SSArc.list(
       [
-        ZVector.only(x: -xA, y: yA),
-        ZVector.only(x: -xA, y: yB),
+        SSVector.only(x: -xA, y: yA),
+        SSVector.only(x: -xA, y: yB),
       ],
       null,
     ));
 
-    // top left corner
     if (yB != 0) {
-      path.add(ZLine.vector(ZVector.only(x: -xA, y: -yB)));
+      path.add(SSLine.vector(SSVector.only(x: -xA, y: -yB)));
     }
-    path.add(ZArc.list([
-      ZVector.only(x: -xA, y: -yA),
-      ZVector.only(x: -xB, y: -yA),
+    path.add(SSArc.list([
+      SSVector.only(x: -xA, y: -yA),
+      SSVector.only(x: -xB, y: -yA),
     ]));
 
-    // back to top right corner
     if (xB != 0) {
-      path.add(ZLine.vector(ZVector.only(x: xB, y: -yA)));
+      path.add(SSLine.vector(SSVector.only(x: xB, y: -yA)));
     }
 
     return path;
@@ -170,12 +162,12 @@ class RoundedRectPathBuilder extends PathBuilder {
   }
 }
 
-class ZCircle extends ZShapeBuilder {
+class SSCircle extends SSShapeBuilder {
   final double diameter;
 
   final int quarters;
 
-  const ZCircle({
+  const SSCircle({
     Key? key,
     required this.diameter,
     this.quarters = 4,
@@ -184,7 +176,7 @@ class ZCircle extends ZShapeBuilder {
     Color? backfaceColor,
     double stroke = 1,
     bool fill = false,
-    ZVector front = const ZVector.only(z: 1),
+    SSVector front = const SSVector.only(z: 1),
   })  : assert(quarters >= 0 && quarters <= 4),
         super(
           key: key,
@@ -194,7 +186,7 @@ class ZCircle extends ZShapeBuilder {
           closed: closed,
           fill: fill,
           front: front,
-          sortPoint: ZVector.zero,
+          sortPoint: SSVector.zero,
         );
 
   @override
@@ -207,13 +199,13 @@ class ZCircle extends ZShapeBuilder {
   }
 }
 
-class ZEllipse extends ZShapeBuilder {
+class SSEllipse extends SSShapeBuilder {
   final double width;
   final double height;
 
   final int quarters;
 
-  const ZEllipse({
+  const SSEllipse({
     Key? key,
     required this.width,
     required this.height,
@@ -222,7 +214,7 @@ class ZEllipse extends ZShapeBuilder {
     Color? backfaceColor,
     double stroke = 1,
     bool fill = false,
-    ZVector front = const ZVector.only(z: 1),
+    SSVector front = const SSVector.only(z: 1),
   })  : assert(quarters >= 0 && quarters <= 4),
         super(
           key: key,
@@ -232,7 +224,7 @@ class ZEllipse extends ZShapeBuilder {
           closed: false,
           fill: fill,
           front: front,
-          sortPoint: ZVector.zero,
+          sortPoint: SSVector.zero,
         );
 
   @override
@@ -258,39 +250,39 @@ class EllipsePathBuilder extends PathBuilder {
   });
 
   @override
-  List<ZPathCommand> buildPath() {
+  List<SSPathCommand> buildPath() {
     var x = width / 2;
     var y = height / 2;
 
     var path = [
-      ZLine.vector(ZVector.only(x: 0, y: -y)),
-      ZArc(
-        corner: ZVector.only(x: x, y: -y),
-        end: ZVector.only(x: x, y: 0),
+      SSLine.vector(SSVector.only(x: 0, y: -y)),
+      SSArc(
+        corner: SSVector.only(x: x, y: -y),
+        end: SSVector.only(x: x, y: 0),
       ),
     ];
 
     if (quarters > 1) {
       path.add(
-        ZArc(
-          corner: ZVector.only(x: x, y: y),
-          end: ZVector.only(x: 0, y: y),
+        SSArc(
+          corner: SSVector.only(x: x, y: y),
+          end: SSVector.only(x: 0, y: y),
         ),
       );
     }
     if (quarters > 2) {
       path.add(
-        ZArc(
-          corner: ZVector.only(x: -x, y: y),
-          end: ZVector.only(x: -x, y: 0),
+        SSArc(
+          corner: SSVector.only(x: -x, y: y),
+          end: SSVector.only(x: -x, y: 0),
         ),
       );
     }
     if (quarters > 3) {
       path.add(
-        ZArc(
-          corner: ZVector.only(x: -x, y: -y),
-          end: ZVector.only(x: 0, y: -y),
+        SSArc(
+          corner: SSVector.only(x: -x, y: -y),
+          end: SSVector.only(x: 0, y: -y),
         ),
       );
     }
@@ -307,11 +299,11 @@ class EllipsePathBuilder extends PathBuilder {
   }
 }
 
-class ZPolygon extends ZShapeBuilder {
+class SSPolygon extends SSShapeBuilder {
   final int sides;
   final double radius;
 
-  const ZPolygon({
+  const SSPolygon({
     Key? key,
     required this.sides,
     required this.radius,
@@ -319,7 +311,7 @@ class ZPolygon extends ZShapeBuilder {
     Color? backfaceColor,
     double stroke = 1,
     bool fill = false,
-    ZVector front = const ZVector.only(z: 1),
+    SSVector front = const SSVector.only(z: 1),
   })  : assert(sides > 2),
         assert(radius > 0),
         super(
@@ -330,7 +322,7 @@ class ZPolygon extends ZShapeBuilder {
           closed: true,
           fill: fill,
           front: front,
-          sortPoint: ZVector.zero,
+          sortPoint: SSVector.zero,
         );
 
   @override
@@ -349,12 +341,12 @@ class PolygonPathBuilder extends PathBuilder {
   });
 
   @override
-  List<ZPathCommand> buildPath() {
+  List<SSPathCommand> buildPath() {
     return List.generate(sides, (index) {
       final double theta = index / sides * tau - tau / 4;
       final double x = math.cos(theta) * radius;
       final double y = math.sin(theta) * radius;
-      return ZLine.vector(ZVector.only(x: x, y: y));
+      return SSLine.vector(SSVector.only(x: x, y: y));
     });
   }
 

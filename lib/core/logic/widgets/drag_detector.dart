@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 import '../core.dart';
 
 typedef DragWidgetBuilder = Widget Function(
-    BuildContext context, ZDragController controller);
+    BuildContext context, SSDragController controller);
 
 class ZDragDetector extends StatefulWidget {
   final DragWidgetBuilder builder;
@@ -16,13 +16,13 @@ class ZDragDetector extends StatefulWidget {
 }
 
 class _ZDragDetectorState extends State<ZDragDetector> {
-  late ZDragController controller;
+  late SSDragController controller;
   Offset dragStart = Offset.zero;
   Offset dragStartR = Offset.zero;
 
   @override
   void initState() {
-    controller = ZDragController(ZVector.zero);
+    controller = SSDragController(SSVector.zero);
     controller.addListener(update);
     super.initState();
   }
@@ -48,7 +48,7 @@ class _ZDragDetectorState extends State<ZDragDetector> {
           var minSize = min(displaySize.width, displaySize.height);
           var moveRY = moveX / minSize * tau;
           var moveRX = moveY / minSize * tau;
-          controller._rotate = ZVector.only(
+          controller._rotate = SSVector.only(
             x: dragStartR.dx - moveRX,
             y: dragStartR.dy - moveRY,
           );
@@ -67,12 +67,12 @@ class _ZDragDetectorState extends State<ZDragDetector> {
   }
 }
 
-class ZDragController extends ValueNotifier<ZVector> {
-  ZDragController(value) : super(value);
+class SSDragController extends ValueNotifier<SSVector> {
+  SSDragController(value) : super(value);
 
-  ZVector get rotate => value;
+  SSVector get rotate => value;
 
-  set _rotate(ZVector rotate) {
+  set _rotate(SSVector rotate) {
     value = rotate;
   }
 }

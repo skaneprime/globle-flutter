@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:globe_flutter_android/core/render/render_box.dart';
-import 'package:globe_flutter_android/core/widgets/widget.dart';
-export 'package:globe_flutter_android/core/widgets/figures/rect.dart';
+import 'package:globe_flutter_android/core/logic/render/render_box.dart';
+import 'package:globe_flutter_android/core/logic/widgets/widget.dart';
+export 'package:globe_flutter_android/core/logic/widgets/figures/rect.dart';
 
-class ZIllustration extends ZMultiChildWidget {
+class SSIllustration extends SSMultiChildWidget {
   final double zoom;
 
-  /// Whether clipBehavioring children should be clipped. See [clipBehavior].
-  ///
-  /// Some children in a stack might clipBehavior its box. When this flag is set to
-  /// [clipBehavior.clip], children cannot paint outside of the stack's box.
   final Clip clipBehavior;
 
-  ZIllustration({super.key, 
+  SSIllustration({
+    super.key,
     this.clipBehavior = Clip.hardEdge,
     required List<Widget> children,
     this.zoom = 1,
@@ -32,11 +29,11 @@ class ZIllustration extends ZMultiChildWidget {
   }
 }
 
-class RenderZIllustration extends RenderMultiChildZBox {
+class RenderZIllustration extends RenderMultiChildBoxSS {
   RenderZIllustration({
     Clip clipBehavior = Clip.none,
     double zoom = 0,
-    List<RenderZBox>? children,
+    List<RenderSSBox>? children,
   })  : assert(zoom >= 0),
         _zoom = zoom,
         _clipBehavior = clipBehavior,
@@ -54,10 +51,6 @@ class RenderZIllustration extends RenderMultiChildZBox {
   @override
   bool get sizedByParent => true;
 
-  /// Whether clipBehavioring children should be clipped. See [clipBehavior].
-  ///
-  /// Some children in a stack might clipBehavior its box. When this flag is set to
-  /// [clipBehavior.clip], children cannot paint outside of the stack's box.
   Clip get clipBehavior => _clipBehavior;
   Clip _clipBehavior;
   set clipBehavior(Clip value) {
